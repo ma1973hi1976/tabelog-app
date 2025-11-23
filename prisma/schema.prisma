@@ -1,0 +1,47 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Store {
+  id            Int      @id @default(autoincrement())
+  name          String
+  address       String?
+  area          String?
+  category      String?
+  phone         String?
+  businessHours String?  @map("business_hours")
+  budgetRange   String?  @map("budget_range")
+  description   String?
+  editPassword  String?  @map("edit_password")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  
+  reviews Review[]
+
+  @@map("stores")
+}
+
+model Review {
+  id           Int      @id @default(autoincrement())
+  storeId      Int      @map("store_id")
+  rating       Int
+  nickname     String?
+  title        String?
+  body         String
+  visitDate    String?  @map("visit_date")
+  editPassword String?  @map("edit_password")
+  createdAt    DateTime @default(now()) @map("created_at")
+  
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@map("reviews")
+}
+
